@@ -1,0 +1,7 @@
+terraform-azurerm-avm-ptn-virtualwan/**/*.md
+terraform-azurerm-avm-ptn-virtualwan/avm*
+terraform-azurerm-avm-ptn-virtualwan/examples
+terraform-azurerm-avm-ptn-virtualwan/tests
+terraform-azurerm-avm-ptn-virtualwan/Makefile
+terraform-azurerm-avm-ptn-virtualwan/modules/.terraform-docs.yml
+*~

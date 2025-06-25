@@ -1,0 +1,55 @@
+name: Auto - Apply changes on Merge to main
+
+# only trigger on pull request closed events
+on:
+  pull_request:
+    types: [ closed ]
+    branches:
+      - main
+
+concurrency:
+  group: terraform-${{ github.base_ref }}
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  terraform_apply:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+  
+
+    runs-on: ubuntu-latest
+    name: Auto Apply terraform code
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure Login with OIDC
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Configure Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Initialize Terraform
+        run: terraform init
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_aws_vpn_gateway_preshared_key1: ${{ secrets.AWS_VPN_GATEWAY_PRESHARED_KEY1 }}
+          TF_VAR_aws_vpn_gateway_preshared_key2: ${{ secrets.AWS_VPN_GATEWAY_PRESHARED_KEY2 }}
+          
+
+      - name: Run Terraform Apply
+        run: |
+          terraform apply -auto-approve
+        env:
+          TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          TF_VAR_aws_vpn_gateway_preshared_key1: ${{ secrets.AWS_VPN_GATEWAY_PRESHARED_KEY1 }}
+          TF_VAR_aws_vpn_gateway_preshared_key2: ${{ secrets.AWS_VPN_GATEWAY_PRESHARED_KEY2 }}
