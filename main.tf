@@ -50,13 +50,13 @@ module "vwan_with_vhub" {
         peer_weight = 0
         instance_0_bgp_peering_address = {
           custom_ips = [
-            "169.254.21.1", # 169.254.21.0/30, with AWS VPN gateway using 169.254.21.1
+            # "169.254.21.1", # 169.254.21.0/30, with AWS VPN gateway using 169.254.21.1
             "169.254.21.2"
           ]
         }
         instance_1_bgp_peering_address = {
           custom_ips = [
-            "169.254.21.5", # 169.254.21.4/30, with AWS VPN gateway using 169.254.21.5
+            # "169.254.21.5", # 169.254.21.4/30, with AWS VPN gateway using 169.254.21.5
             "169.254.21.6"
           ]
         }
